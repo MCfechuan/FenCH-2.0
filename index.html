@@ -1,386 +1,308 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FenCH 启动器</title>
-  <link rel="icon" href="icon/icon.ico" />
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
-      background: #0a0a0a;
-      color: #e8e8e8;
-      min-height: 100vh;
-      scroll-behavior: smooth;
-    }
-
-    /* ── 导航 ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      padding: 0 48px;
-      height: 60px;
-      background: rgba(10,10,10,0.88);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .nav-logo {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: #fff;
-      text-decoration: none;
-      margin-right: auto;
-    }
-    .nav-logo span { color: #62c462; }
-    nav a.nav-link {
-      font-size: 14px;
-      color: rgba(255,255,255,0.55);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    nav a.nav-link:hover { color: #fff; }
-
-    /* ── 通用背景块 ── */
-    .bg-block {
-      position: absolute;
-      inset: 0;
-      background: url("background/background.png") center/cover no-repeat;
-      z-index: 0;
-    }
-
-    /* ── 英雄区 ── */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 80px 24px 60px;
-      overflow: hidden;
-    }
-    .hero .bg-block {
-      filter: brightness(0.45);
-    }
-    .hero > *:not(.bg-block) { position: relative; z-index: 1; }
-
-    .hero-badge {
-      display: inline-block;
-      padding: 4px 14px;
-      border: 1px solid rgba(98,196,98,0.5);
-      border-radius: 20px;
-      font-size: 12px;
-      color: #62c462;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 28px;
-    }
-    .hero h1 {
-      font-size: clamp(42px, 7vw, 80px);
-      font-weight: 900;
-      line-height: 1.05;
-      letter-spacing: -1px;
-      color: #fff;
-      text-shadow: 0 4px 32px rgba(0,0,0,0.7);
-      margin-bottom: 20px;
-    }
-    .hero h1 span { color: #62c462; }
-    .hero p {
-      font-size: clamp(15px, 2vw, 18px);
-      color: rgba(255,255,255,0.65);
-      max-width: 520px;
-      line-height: 1.7;
-      margin-bottom: 48px;
-    }
-    .btn-group {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 32px;
-      border-radius: 4px;
-      font-size: 15px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: transform 0.15s, filter 0.15s;
-    }
-    .btn:hover { transform: translateY(-2px); filter: brightness(1.12); }
-    .btn:active { transform: translateY(0); }
-    .btn-primary { background: #62c462; color: #0a0a0a; box-shadow: 0 4px 24px rgba(98,196,98,0.35); }
-    .btn-secondary { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
-
-    /* ── 通用 section ── */
-    .section {
-      position: relative;
-      overflow: hidden;
-      padding: 100px 24px;
-    }
-    .section-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-    .section .bg-block { filter: brightness(0.25); }
-
-    .section-label {
-      font-size: 12px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #62c462;
-      margin-bottom: 12px;
-    }
-    .section h2 {
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 16px;
-    }
-    .section > .section-inner > p,
-    .section-inner > p {
-      color: rgba(255,255,255,0.5);
-      font-size: 15px;
-      margin-bottom: 56px;
-      max-width: 520px;
-    }
-
-    /* ── 卡片 ── */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: rgba(10,10,10,0.7);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 8px;
-      padding: 32px 28px;
-      backdrop-filter: blur(8px);
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .card:hover {
-      border-color: rgba(98,196,98,0.4);
-      background: rgba(20,40,20,0.75);
-    }
-    .card-icon { font-size: 34px; margin-bottom: 18px; display: block; }
-    .card h3 { font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 10px; }
-    .card p { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 26px; }
-    .card .btn { width: 100%; justify-content: center; }
-
-    /* ── 版本网格 ── */
-    .version-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .ver-tag {
-      padding: 6px 16px;
-      border-radius: 4px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      font-size: 13px;
-      color: rgba(255,255,255,0.7);
-      font-family: "Consolas", monospace;
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
-    }
-    .ver-tag:hover {
-      background: rgba(98,196,98,0.15);
-      border-color: rgba(98,196,98,0.5);
-      color: #62c462;
-    }
-    .ver-tag.latest {
-      background: rgba(98,196,98,0.15);
-      border-color: rgba(98,196,98,0.5);
-      color: #62c462;
-    }
-
-    /* ── 特性列表 ── */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
-    }
-    .feature {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-    }
-    .feature-icon {
-      font-size: 22px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .feature h4 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .feature p { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; }
-
-    /* ── 分割线 ── */
-    .divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); }
-
-    /* ── 页脚 ── */
-    footer {
-      text-align: center;
-      padding: 40px 24px;
-      color: rgba(255,255,255,0.2);
-      font-size: 13px;
-    }
-    footer span { color: rgba(98,196,98,0.6); }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FenCH 启动器 — 最好玩的 Minecraft 启动器</title>
+  <meta name="description" content="FenCH 启动器，支持正版/第三方登录、自动安装 Java、Fabric/Quilt、联机、聊天等功能。">
+  <link rel="icon" href="icon/icon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="icon/icon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <nav>
-    <a class="nav-logo" href="#">FenCH <span>启动器</span></a>
-    <a class="nav-link" href="#features">特性</a>
-    <a class="nav-link" href="#versions">版本</a>
-    <a class="nav-link" href="#download">下载</a>
-  </nav>
+  <!-- 自定义光标 -->
+  <div class="cursor-dot"></div>
+  <div class="cursor-outline"></div>
 
-  <!-- ── 英雄区 ── -->
-  <section class="hero" id="home">
-    <div class="bg-block"></div>
-    <div class="hero-badge">Minecraft Launcher</div>
-    <h1>FenCH<br /><span>启动器</span></h1>
-    <p>原版 Minecraft · 自动安装 Java · 支持正版与第三方登录</p>
-    <div class="btn-group">
-      <a class="btn btn-primary" href="https://wwbuj.lanzouw.com/iytNm3l8a0ib">⬇ 立即下载</a>
-      <a class="btn btn-secondary" href="#features">了解更多</a>
-    </div>
-  </section>
+  <!-- 导航 -->
+  <header class="header" id="header">
+    <nav class="navbar">
+      <a class="logo" href="#">⛏ FenCH</a>
+      <ul class="nav-links">
+        <li><a href="#features">功能</a></li>
+        <li><a href="#showcase">展示</a></li>
+        <li><a href="#download">下载</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <a href="https://wwbuj.lanzouw.com/iDJyv3lj8t5g" target="_blank" class="btn-clay btn-nav">立即下载</a>
+    </nav>
+  </header>
 
-  <hr class="divider" />
+  <main>
 
-  <!-- ── 特性 ── -->
-  <section class="section" id="features">
-    <div class="bg-block"></div>
-    <div class="section-inner">
-      <div class="section-label">Features</div>
-      <h2>为什么选择 FenCH</h2>
-      <p>简单、快速、开箱即用，专为原版 Minecraft 打造。</p>
-      <div class="features">
-        <div class="feature">
-          <span class="feature-icon">⚡</span>
-          <div>
-            <h4>64 线程极速下载</h4>
-            <p>连接池 + 256KB 分块，资源文件下载快到飞起。</p>
-          </div>
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="hero-content">
+        <div class="hero-badge">✨ 全新 2.0 版本</div>
+        <h1>让 Minecraft<br><span class="accent">启动</span>变得有趣</h1>
+        <p class="lead">FenCH 启动器 — 自动安装 Java、一键安装 Fabric/Quilt、<br>内置聊天、联机、积分游戏，还有隐藏彩蛋等你发现。</p>
+        <div class="hero-btns">
+          <a href="https://wwbuj.lanzouw.com/iDJyv3lj8t5g" target="_blank" class="btn-clay btn-primary magnetic">🚀 免费下载</a>
+          <a href="#features" class="btn-clay btn-ghost magnetic">了解功能 →</a>
         </div>
-        <div class="feature">
-          <span class="feature-icon">☕</span>
-          <div>
-            <h4>Java 自动管理</h4>
-            <p>自动检测系统 Java，检测不到则自动下载 Java 21。</p>
-          </div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num">1.21.11</span><span class="stat-label">最新支持版本</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><span class="stat-num">Java 自动</span><span class="stat-label">无需手动配置</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><span class="stat-num">3 种登录</span><span class="stat-label">正版 / 第三方 / 离线</span></div>
         </div>
-        <div class="feature">
-          <span class="feature-icon">🔑</span>
-          <div>
-            <h4>多种登录方式</h4>
-            <p>离线 / 微软正版 / 第三方皮肤站（authlib-injector）。</p>
+      </div>
+      <div class="hero-visual">
+        <div class="launcher-mockup">
+          <div class="mockup-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="mockup-title">FenCH 启动器</span>
           </div>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">🎨</span>
-          <div>
-            <h4>Fluent 深色界面</h4>
-            <p>基于 PyQt-Fluent-Widgets，PCL2 风格，赏心悦目。</p>
-          </div>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">📦</span>
-          <div>
-            <h4>纯原版，零依赖</h4>
-            <p>不捆绑 Fabric / Forge，专注原版体验，干净轻量。</p>
-          </div>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">💾</span>
-          <div>
-            <h4>PCL2 目录结构</h4>
-            <p>文件全部存放在启动器目录，方便迁移与备份。</p>
+          <div class="mockup-body">
+            <div class="mockup-sidebar">
+              <div class="sidebar-item active">⚡ 启动</div>
+              <div class="sidebar-item">📦 下载</div>
+              <div class="sidebar-item">⚙️ 设置</div>
+              <div class="sidebar-item">💬 聊天</div>
+              <div class="sidebar-item">⋯ 更多</div>
+            </div>
+            <div class="mockup-main">
+              <div class="mockup-card">
+                <div class="mockup-label">已安装版本</div>
+                <div class="mockup-select">1.21.4-fabric ▾</div>
+              </div>
+              <div class="mockup-card accent-card">
+                <div class="mockup-label">当前账号</div>
+                <div class="mockup-user">👤 Steve</div>
+              </div>
+              <div class="mockup-launch-btn">▶ 启动游戏</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <hr class="divider" />
-
-  <!-- ── 支持版本 ── -->
-  <section class="section" id="versions">
-    <div class="bg-block"></div>
-    <div class="section-inner">
-      <div class="section-label">Supported Versions</div>
-      <h2>支持的版本</h2>
-      <p>覆盖 1.20.1 到最新的 1.21.11，持续更新。</p>
-      <div class="version-grid">
-        <span class="ver-tag">1.20.1</span>
-        <span class="ver-tag">1.20.2</span>
-        <span class="ver-tag">1.20.3</span>
-        <span class="ver-tag">1.20.4</span>
-        <span class="ver-tag">1.20.5</span>
-        <span class="ver-tag">1.20.6</span>
-        <span class="ver-tag">1.21</span>
-        <span class="ver-tag">1.21.1</span>
-        <span class="ver-tag">1.21.2</span>
-        <span class="ver-tag">1.21.3</span>
-        <span class="ver-tag">1.21.4</span>
-        <span class="ver-tag">1.21.5</span>
-        <span class="ver-tag">1.21.6</span>
-        <span class="ver-tag">1.21.7</span>
-        <span class="ver-tag">1.21.8</span>
-        <span class="ver-tag">1.21.9</span>
-        <span class="ver-tag">1.21.10</span>
-        <span class="ver-tag latest">1.21.11 ✦ 最新</span>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider" />
-
-  <!-- ── 下载 ── -->
-  <section class="section" id="download">
-    <div class="bg-block"></div>
-    <div class="section-inner">
-      <div class="section-label">Downloads</div>
-      <h2>下载</h2>
-      <p>启动器本体与运行所需的 Java 环境，按需下载。</p>
-      <div class="cards">
-        <div class="card">
-          <span class="card-icon"><img src="icon/icon.ico" width="40" height="40" style="image-rendering:pixelated;" /></span>
-          <h3>FenCH 启动器</h3>
-          <p>启动器本体，支持原版 Minecraft 1.20.1 ~ 1.21.11，内置 authlib-injector，开箱即用。</p>
-          <a class="btn btn-primary" href="https://wwbuj.lanzouw.com/iytNm3l8a0ib">下载启动器</a>
-        </div>
-        <div class="card">
-          <span class="card-icon">☕</span>
-          <h3>Java 21</h3>
-          <p>Oracle JDK 21 Windows x64，Minecraft 1.20+ 推荐运行环境。若启动器检测不到 Java 可手动安装。</p>
-          <a class="btn btn-secondary" href="https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.zip">下载 Java 21</a>
+    <!-- 滚动字幕 -->
+    <div class="marquee-section">
+      <div class="marquee-track">
+        <div class="marquee-content">
+          <span>自动安装 Java ⭐</span><span>Fabric / Quilt ⭐</span>
+          <span>正版登录 ⭐</span><span>第三方皮肤站 ⭐</span>
+          <span>全局聊天 ⭐</span><span>P2P 联机 ⭐</span>
+          <span>积分游戏 🎮</span><span>个性化主题 ⭐</span>
+          <span>自动安装 Java ⭐</span><span>Fabric / Quilt ⭐</span>
+          <span>正版登录 ⭐</span><span>第三方皮肤站 ⭐</span>
+          <span>全局聊天 ⭐</span><span>P2P 联机 ⭐</span>
+          <span>积分游戏 🎮</span><span>个性化主题 ⭐</span>
         </div>
       </div>
     </div>
-  </section>
 
-  <hr class="divider" />
+    <!-- 功能 -->
+    <section class="features-section" id="features">
+      <div class="section-header">
+        <h2>为什么选择 FenCH？</h2>
+        <p class="lead">每一个功能都是为了让你的 Minecraft 体验更顺畅、更有趣。</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card clay">
+          <div class="feature-icon">☕</div>
+          <h3>Java 全自动</h3>
+          <p>检测版本需求，自动下载对应 Java，无需手动配置，64 线程极速下载。</p>
+        </div>
+        <div class="feature-card clay">
+          <div class="feature-icon">🧵</div>
+          <h3>Fabric / Quilt</h3>
+          <p>安装完原版后弹出加载器选择，一键安装 Fabric 或 Quilt，自动合并依赖库。</p>
+        </div>
+        <div class="feature-card clay">
+          <div class="feature-icon">🔐</div>
+          <h3>三种登录方式</h3>
+          <p>支持微软正版、authlib-injector 第三方皮肤站、离线账号，自动静默刷新 Token。</p>
+        </div>
+        <div class="feature-card clay featured">
+          <div class="feature-icon">💬</div>
+          <h3>全局聊天</h3>
+          <p>所有使用 FenCH 的玩家共享聊天频道，需要 MC 账号登录，特殊账号有专属标识。</p>
+          <div class="feature-badge">新功能</div>
+        </div>
+        <div class="feature-card clay">
+          <div class="feature-icon">🌐</div>
+          <h3>P2P 联机</h3>
+          <p>基于 UDP 打洞的跨网络联机，无需第三方工具，仅限 FenCH 用户之间使用。</p>
+        </div>
+        <div class="feature-card clay">
+          <div class="feature-icon">🎨</div>
+          <h3>个性化主题</h3>
+          <p>自定义主题色、背景图片、窗口透明度、字体大小、侧边栏宽度，打造专属界面。</p>
+        </div>
+        <div class="feature-card clay">
+          <div class="feature-icon">🔧</div>
+          <h3>自动修复依赖</h3>
+          <p>启动前自动检查并补全缺失的依赖库，BMCLAPI 镜像加速，国内极速下载。</p>
+        </div>
+        <div class="feature-card clay">
+          <div class="feature-icon">🎮</div>
+          <h3>隐藏彩蛋</h3>
+          <p>在主页图标上连点 5 次，解锁隐藏的积分赌博小游戏，积分哈希加密防篡改。</p>
+          <div class="feature-badge secret">彩蛋</div>
+        </div>
+      </div>
+    </section>
 
-  <footer>
-    &copy; 2026 FenCH 启动器 &nbsp;·&nbsp; Made by <span>MC_飞船</span>
+    <!-- 展示 -->
+    <section class="showcase-section" id="showcase">
+      <div class="section-header">
+        <h2>界面一览</h2>
+        <p class="lead">PCL2 风格的四大 Hub 导航，简洁而强大。</p>
+      </div>
+      <div class="showcase-grid">
+        <div class="showcase-card clay">
+          <div class="showcase-screen launch">
+            <div class="ss-title">⚡ 启动</div>
+            <div class="ss-item">已安装版本 ▾</div>
+            <div class="ss-item">账号：Steve</div>
+            <div class="ss-btn">▶ 启动游戏</div>
+          </div>
+          <h4>启动页</h4>
+          <p>选择版本、查看账号、一键启动，进度条实时反馈。</p>
+        </div>
+        <div class="showcase-card clay">
+          <div class="showcase-screen download">
+            <div class="ss-title">📦 下载</div>
+            <div class="ss-tabs"><span class="active">正式版</span><span>远古版</span><span>测试版</span></div>
+            <div class="ss-list">1.21.11<br>1.21.4<br>1.20.6</div>
+            <div class="ss-btn">⬇ 安装选中版本</div>
+          </div>
+          <h4>安装版本</h4>
+          <p>正式版、远古版、测试版三分类，动态拉取最新快照列表。</p>
+        </div>
+        <div class="showcase-card clay">
+          <div class="showcase-screen chat">
+            <div class="ss-title">💬 聊天</div>
+            <div class="ss-msg"><span class="msg-user">Steve:</span> 大家好！</div>
+            <div class="ss-msg"><span class="msg-user owner">MC_FenChuan 主人哦喵~:</span> 欢迎！</div>
+            <div class="ss-input">输入消息…</div>
+          </div>
+          <h4>全局聊天</h4>
+          <p>实时消息同步，主人账号金色高亮，需要 MC 账号才能发言。</p>
+        </div>
+        <div class="showcase-card clay">
+          <div class="showcase-screen settings">
+            <div class="ss-title">⚙️ 设置</div>
+            <div class="ss-row"><span>最大内存</span><span class="ss-val">4096 MB</span></div>
+            <div class="ss-row"><span>主题色</span><span class="ss-color"></span></div>
+            <div class="ss-row"><span>透明度</span><span class="ss-val">90%</span></div>
+            <div class="ss-btn small">自动匹配内存</div>
+          </div>
+          <h4>个性化设置</h4>
+          <p>自动匹配内存、主题色、透明度、一键清理缓存。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 下载 -->
+    <section class="download-section" id="download">
+      <div class="blob blob-dl-1"></div>
+      <div class="blob blob-dl-2"></div>
+      <div class="download-content">
+        <h2>准备好了吗？</h2>
+        <p class="lead">免费下载 FenCH 启动器，开始你的 Minecraft 之旅。</p>
+        <div class="download-cards">
+          <div class="download-card clay featured-dl">
+            <div class="dl-badge">推荐</div>
+            <div class="dl-icon">🪟</div>
+            <h3>Windows</h3>
+            <p>支持 Windows 10 / 11<br>x64 架构，开箱即用</p>
+            <a href="https://wwbuj.lanzouw.com/iDJyv3lj8t5g" target="_blank" class="btn-clay btn-primary magnetic">⬇ 立即下载</a>
+            <span class="dl-version">v2.0 · 蓝奏云</span>
+          </div>
+        </div>
+        <div class="requirements">
+          <h4>系统要求</h4>
+          <div class="req-grid">
+            <div class="req-item"><span class="req-label">操作系统</span><span>Windows 10 64位 或更高</span></div>
+            <div class="req-item"><span class="req-label">内存</span><span>4 GB RAM（推荐 8 GB）</span></div>
+            <div class="req-item"><span class="req-label">存储</span><span>500 MB 可用空间</span></div>
+            <div class="req-item"><span class="req-label">网络</span><span>首次运行需要联网下载 Java</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section" id="faq">
+      <div class="section-header">
+        <h2>常见问题</h2>
+        <p class="lead">有疑问？这里可能有你要的答案。</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item clay">
+          <summary>需要自己安装 Java 吗？</summary>
+          <p>不需要。FenCH 会根据 Minecraft 版本自动检测并下载对应的 Java（8 / 17 / 21），存放在启动器目录的 <code>.Java</code> 文件夹中。</p>
+        </details>
+        <details class="faq-item clay">
+          <summary>支持哪些登录方式？</summary>
+          <p>支持三种：微软正版账号（OAuth）、第三方皮肤站（authlib-injector，如 LittleSkin）、离线账号。Token 过期会静默刷新，不会弹出烦人的错误提示。</p>
+        </details>
+        <details class="faq-item clay">
+          <summary>联机功能怎么用？</summary>
+          <p>在"更多 → 联机"页面创建或加入房间，基于 UDP 打洞实现跨网络连接，仅限使用 FenCH 启动器的玩家之间使用，无需第三方工具。</p>
+        </details>
+        <details class="faq-item clay">
+          <summary>聊天功能需要什么条件？</summary>
+          <p>需要先在账号页面登录 Minecraft 账号（正版、第三方或离线均可）。消息通过本地文件共享，所有使用同一启动器目录的用户可以互相看到消息。</p>
+        </details>
+        <details class="faq-item clay">
+          <summary>彩蛋怎么触发？</summary>
+          <p>这是彩蛋，自己找找看 😏</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="blob blob-cta"></div>
+      <div class="cta-content">
+        <h2>开始你的冒险</h2>
+        <p>FenCH 启动器，由 MC_飞船 用爱制作 ❤️</p>
+        <a href="https://wwbuj.lanzouw.com/iDJyv3lj8t5g" target="_blank" class="btn-clay btn-white magnetic">立即下载 →</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo">⛏ FenCH</span>
+        <p>让 Minecraft 启动变得有趣</p>
+      </div>
+      <div class="footer-links">
+        <h5>功能</h5>
+        <a href="#features">自动 Java</a>
+        <a href="#features">Fabric/Quilt</a>
+        <a href="#features">全局聊天</a>
+        <a href="#features">P2P 联机</a>
+      </div>
+      <div class="footer-links">
+        <h5>关于</h5>
+        <a href="#">作者：MC_飞船</a>
+        <a href="https://wwbuj.lanzouw.com/iDJyv3lj8t5g" target="_blank">下载地址</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 FenCH 启动器 · 由 MC_飞船 制作 · 基于 Python + PyQt5</p>
+    </div>
   </footer>
 
+  <a href="#" class="back-to-top" id="backToTop">↑</a>
+
+  <script src="script.js"></script>
 </body>
 </html>
